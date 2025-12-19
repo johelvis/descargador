@@ -1,0 +1,6 @@
+node_modules/
+dist/
+downloads/
+.vscode/
+*.log
+downloader_debug.txt
