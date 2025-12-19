@@ -1,3 +1,0 @@
-@echo off
-echo Iniciando Video Downloader...
-npm start
