@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Downloader Ultimate</title>
+    <title>Universal Video Downloader</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -23,56 +23,58 @@
                 <span>Downloader <small>Pro</small></span>
             </div>
 
-            <!-- Controls Grid -->
-            <div class="controls-grid">
+            <!-- Row 1: Manual Input (Top Priority) -->
+            <div class="manual-input-row">
+                <input type="text" id="urlInput" class="url-input"
+                    placeholder="Paste YouTube, TikTok, Facebook, Instagram link...">
+                <button id="downloadBtn" class="big-action-btn" title="Process Link">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Download
+                </button>
+                <div class="toggle-switch-container" title="Auto-detect Clipboard">
+                    <label class="switch">
+                        <input type="checkbox" id="autoDetectToggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span style="font-size:0.8rem; margin-left:5px;">Auto</span>
+                </div>
+            </div>
 
-                <!-- 1. Choose Directory -->
+            <!-- Row 2: Settings Grid -->
+            <div class="controls-grid" style="margin-top: 15px;">
+                <!-- 1. Take Folder -->
                 <div class="control-panel folder-panel">
                     <div class="folder-click-area" id="folderBtn">
                         <div class="panel-icon"><i class="fa-solid fa-folder-open"></i></div>
                         <div class="panel-info">
-                            <label>Guardar en:</label>
-                            <span id="folderPathText">Descargas</span>
+                            <label>Save to:</label>
+                            <span id="folderPathText">Downloads</span>
                         </div>
                     </div>
-                    <button id="openFolderBtn" class="btn-mini-icon" title="Abrir Carpeta"><i
-                            class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                    <button id="openFolderBtn" class="btn-mini-icon" title="Open Folder">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </button>
                 </div>
 
-                <!-- 2. Format / Quality (Visual Only for now as we are MP3 focused) -->
+                <!-- 2. Format / Quality -->
                 <div class="control-panel options-panel">
                     <div class="option-group">
-                        <label>Formato:</label>
+                        <label>Format:</label>
                         <div class="pill-switch">
-                            <span class="active">MP3</span>
-                            <span>MP4</span>
+                            <span class="active" data-value="mp3">MP3</span>
+                            <span data-value="mp4">MP4</span>
                         </div>
                     </div>
-                    <div class="option-group">
-                        <label>Calidad:</label>
-                        <div class="quality-badge">Mejor <i class="fa-solid fa-star"></i></div>
+                    <!-- Quality Select (Initially Hidden) -->
+                    <div class="option-group" id="qualityGroup">
+                        <label>Quality:</label>
+                        <select id="qualitySelect" class="control-select">
+                            <option value="best">Max</option>
+                            <option value="1080">1080p</option>
+                            <option value="720">720p</option>
+                            <option value="480">480p</option>
+                        </select>
                     </div>
                 </div>
-
-                <!-- 3. Auto Detect Switch (Moved here) -->
-                <div class="control-panel action-panel">
-                    <div class="auto-detect-wrapper">
-                        <label class="switch">
-                            <input type="checkbox" id="autoDetectToggle" checked>
-                            <span class="slider round"></span>
-                        </label>
-                        <span>Auto-Detectar</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- New Manual Input Row -->
-            <div class="manual-input-row">
-                <input type="text" id="urlInput" placeholder="O pega tu enlace aquí manualmente...">
-                <button id="downloadBtn" class="big-action-btn">
-                    <i class="fa-solid fa-cloud-arrow-down"></i> Descargar
-                </button>
             </div>
         </header>
 

@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let isProcessingPreview = false;
     let lastClipboardText = '';
     let currentPreviewData = null;
+    let selectedQuality = 'best'; // New
+
+    // Generic URL Regex (Matches http/https + domain)
+    const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
     // --- Persistence & History State ---
     const STORAGE_KEY_SETTINGS = 'downloader_settings';
@@ -39,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let settings = JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS)) || {
         path: null,
         format: 'mp3',
-        autoDetect: true
+        autoDetect: true,
+        quality: 'best' // New default
     };
 
     // Apply Saved Settings on Load
@@ -54,6 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
             else s.classList.remove('active');
         });
     }
+    if (settings.quality) { // New
+        selectedQuality = settings.quality;
+    }
     autoDetectToggle.checked = settings.autoDetect;
 
     // Save Settings Helper
@@ -61,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         settings.path = selectedDownloadPath;
         settings.format = selectedFormat;
         settings.autoDetect = autoDetectToggle.checked;
+        settings.quality = selectedQuality; // New
         localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
     }
 
@@ -217,14 +226,10 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const text = await navigator.clipboard.readText();
                 if (text && text !== lastClipboardText) {
-                    lastClipboardText = text;
-
-                    // Regex for YouTube
-                    const ytRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
-                    if (ytRegex.test(text.trim())) {
-                        console.log("Clipboard detected:", text);
+                    if (urlRegex.test(text.trim())) {
+                        lastClipboardText = text;
+                        // Auto-fill and fetch
                         urlInput.value = text.trim();
-                        // Trigger fetch info automatically
                         fetchInfo(text.trim());
                     }
                 }
@@ -335,30 +340,38 @@ document.addEventListener('DOMContentLoaded', () => {
             let playlistTitle = null;
 
             if (currentPreviewData.entries) {
-                items = currentPreviewData.entries.map(entry => ({
+                itemsToAdd = currentPreviewData.entries.map(entry => ({
                     title: entry.title,
                     url: entry.url
                 }));
-                if (currentPreviewData.isPlaylist) playlistTitle = currentPreviewData.title;
             } else {
-                items = [{ url: urlInput.value, title: currentPreviewData.title }];
+                itemsToAdd = [{ url: urlInput.value, title: currentPreviewData.title }];
             }
+
+            const payload = {
+                items: itemsToAdd,
+                downloadPath: selectedDownloadPath,
+                playlistTitle: currentPreviewData.isPlaylist ? currentPreviewData.title : null,
+                format: selectedFormat,
+                quality: selectedQuality // Send quality preference using global state
+            };
 
             const response = await fetch('http://localhost:3000/api/queue/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    items,
-                    downloadPath: selectedDownloadPath,
-                    playlistTitle,
-                    format: selectedFormat // Send 'mp3' or 'mp4'
-                })
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {
                 const resData = await response.json();
                 showStatus(`Añadido: ${resData.count} descargas`, 'success');
                 setTimeout(() => statusMessage.classList.add('hidden'), 3000);
+
+                // Clear Input & Reset Clipboard Check
+                urlInput.value = '';
+                lastClipboardText = ''; // Allow re-pasting same link if needed
+                currentPreviewData = null; // Clear preview data
+                infoPreview.classList.add('hidden'); // Hide preview bar
             }
 
         } catch (e) { showStatus('Fallo al añadir', 'error'); }
@@ -424,13 +437,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return div;
     }
 
-    function updateProgress({ jobId, progress }) {
+    function updateProgress({ jobId, progress, statusText }) {
         const el = document.getElementById(`job-${jobId}`);
         if (el) {
             const bar = el.querySelector('.progress-bar');
             const stat = el.querySelector('.queue-status');
+
             if (bar) bar.style.width = `${progress}%`;
-            if (stat) stat.innerText = `${Math.round(progress)}%`;
+
+            if (stat) {
+                if (statusText) {
+                    stat.innerText = statusText;
+                    stat.style.color = '#f59e0b'; // Amber for processing
+                } else {
+                    stat.innerText = `${Math.round(progress)}%`;
+                    stat.style.color = ''; // Reset color
+                }
+            }
         }
     }
 
