@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Downloader Ultimate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Main Application Wrapper -->
+    <div class="app-container">
+
+        <!-- Header / Top Control Bar -->
+        <header class="top-bar">
+            <!-- Brand -->
+            <div class="brand">
+                <i class="fa-brands fa-youtube"></i>
+                <span>Downloader <small>Pro</small></span>
+            </div>
+
+            <!-- Controls Grid -->
+            <div class="controls-grid">
+
+                <!-- 1. Choose Directory -->
+                <div class="control-panel folder-panel">
+                    <div class="folder-click-area" id="folderBtn">
+                        <div class="panel-icon"><i class="fa-solid fa-folder-open"></i></div>
+                        <div class="panel-info">
+                            <label>Guardar en:</label>
+                            <span id="folderPathText">Descargas</span>
+                        </div>
+                    </div>
+                    <button id="openFolderBtn" class="btn-mini-icon" title="Abrir Carpeta"><i
+                            class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                </div>
+
+                <!-- 2. Format / Quality (Visual Only for now as we are MP3 focused) -->
+                <div class="control-panel options-panel">
+                    <div class="option-group">
+                        <label>Formato:</label>
+                        <div class="pill-switch">
+                            <span class="active">MP3</span>
+                            <span>MP4</span>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <label>Calidad:</label>
+                        <div class="quality-badge">Mejor <i class="fa-solid fa-star"></i></div>
+                    </div>
+                </div>
+
+                <!-- 3. Auto Detect Switch (Moved here) -->
+                <div class="control-panel action-panel">
+                    <div class="auto-detect-wrapper">
+                        <label class="switch">
+                            <input type="checkbox" id="autoDetectToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Auto-Detectar</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- New Manual Input Row -->
+            <div class="manual-input-row">
+                <input type="text" id="urlInput" placeholder="O pega tu enlace aquí manualmente...">
+                <button id="downloadBtn" class="big-action-btn">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Descargar
+                </button>
+            </div>
+        </header>
+
+        <input type="checkbox" id="playlistToggle" style="display:none;" checked>
+        <!-- Default to playlist handling enabled logic -->
+
+        <!-- Info / Status Area -->
+        <div id="infoPreview" class="info-bar hidden">
+            <div class="info-content">
+                <strong id="infoTitle">Analizando...</strong>
+                <span id="infoCount">Espere...</span>
+            </div>
+            <div class="info-actions">
+                <button id="confirmAddBtn" class="btn-mini-success"><i class="fa-solid fa-check"></i> Descargar</button>
+                <button id="cancelPreviewBtn" class="btn-mini-danger"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+
+        <div id="statusMessage" class="status-bar hidden"></div>
+
+        <!-- content area: Queue -->
+        <div class="queue-container">
+            <div class="queue-header-strip">
+                <div class="tabs">
+                    <button class="tab active" data-tab="queue">Cola</button>
+                    <button class="tab" data-tab="history">Historial</button>
+                </div>
+                <div class="queue-tools">
+                    <button id="pauseBtn" title="Pausar"><i class="fa-solid fa-pause"></i></button>
+                    <button id="resumeBtn" class="hidden" title="Reanudar"><i class="fa-solid fa-play"></i></button>
+                    <button id="cancelAllBtn" title="Limpiar"><i class="fa-solid fa-trash-can"></i></button>
+                    <button id="clearHistoryBtn" class="hidden" title="Borrar Historial"><i
+                            class="fa-solid fa-eraser"></i></button>
+                </div>
+            </div>
+
+            <div id="queueList" class="queue-list">
+                <!-- Items injected here -->
+                <div class="empty-state">
+                    <i class="fa-solid fa-music"></i>
+                    <p>La cola está vacía. Copia un enlace para empezar.</p>
+                </div>
+            </div>
+
+            <div id="historyList" class="queue-list hidden">
+                <!-- History Items injected here -->
+                <div class="empty-state">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <p>No hay descargas recientes.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recommendations / Footer Banner (Pseudo-ad for the classic feel) -->
+    <div class="footer-banner">
+        <span><i class="fa-solid fa-bolt"></i> Modo Turbo Activado (10x Hilos)</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

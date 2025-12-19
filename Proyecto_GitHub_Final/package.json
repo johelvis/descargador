@@ -1,0 +1,56 @@
+{
+    "name": "youtube-mp3-downloader",
+    "version": "1.0.0",
+    "description": "Premium YouTube to MP3 Downloader",
+    "main": "electron-main.js",
+    "scripts": {
+        "start": "electron .",
+        "server": "node server.js",
+        "dist": "electron-builder"
+    },
+    "build": {
+        "appId": "com.downloader.pro",
+        "productName": "Youtube Downloader Pro",
+        "win": {
+            "target": "nsis",
+            "icon": "icon.png"
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true,
+            "createDesktopShortcut": true,
+            "shortcutName": "Downloader Pro"
+        },
+        "files": [
+            "**/*",
+            "!dist/*",
+            "!src/*",
+            "!downloads/*",
+            "!kill_all.bat"
+        ],
+        "directories": {
+            "output": "dist"
+        },
+        "extraResources": [
+            {
+                "from": "bin",
+                "to": "bin",
+                "filter": [
+                    "**/*"
+                ]
+            }
+        ],
+        "asar": true
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2"
+    },
+    "devDependencies": {
+        "electron": "^39.2.7",
+        "electron-builder": "^26.0.12"
+    }
+}
